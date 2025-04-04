@@ -1,0 +1,27 @@
+VERSION CONTROL
+Git logic: 
+
+
+
+
+TESTING
+-bug : code beahves diffrently from the documentation
+-error: code behaves diffrently from what is written to do (so documentation is fundamental)
+
+-types of test
+    we want to test if a function is correct, what kind of test can be done?
+
+    advancement test: edits to the function introduce the new features I deside
+    regressions test: edits to the function do not lose functionality that other code relies on
+
+-pytest is a command line program that:
+    search all the current directory for *.py files
+    in each one of those, search all the functions named test_<something>
+    execute all of them and keep track of the results
+    prints a summary of the tests
+
+
+Overwriting test_prova.py
+
+!pytest test_prova.py
+
