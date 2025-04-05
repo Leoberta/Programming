@@ -8,10 +8,8 @@ def inc(x):
     return x + 1
 
 def test_answer_1():
-    assert inc(3) == 5
+    assert inc(3) == 4
     
 def test_answer_2():
-    assert inc(7) == 7
+    assert inc(7) == 8
 
-
-    

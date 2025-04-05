@@ -20,8 +20,110 @@ TESTING
     execute all of them and keep track of the results
     prints a summary of the tests
 
+-In the test driven development code and tests are written together, starting from the specifics.
 
-Overwriting test_prova.py
 
-!pytest test_prova.py
+
+1) In the top-down approach, we will develop our code as if everything works perfectly, and then we will implement it for real
+
+    we start from the "final" function, calling the others as if they exist
+    implement a "stub" function of each one, that does nothing aside of allowing us to execute our code
+    write tests that represents the properties that we expect from our real function
+    replace the stubs with functions that actually have these properties
+
+So helps to control the passages starting from the final idea. 
+
+2) Each test should state: 
+    GIVEN: a valid state of my simulation
+    WHEN: I apply to it the evolve function
+    THEN: the resulting state is still a valid one
+
+- random numbers do not play well with testing because tests are deterministic
+
+
+-Pytest Parametric.....
+
+-Pytest Specific: 
+
+    to create a fixture one just needs to create a function with the name of the object that it wants to create.
+    all the test methods can now take an argument with the same name as the fixture, and they will receive the value of that fixture as the argument
+    typical uses might involve reading the content of a file or setting up complex data structures.
+
+pytest specific - command line options
+
+here are some of the pytest command line options that might be useful to shorten your testing cycle.
+
+    showing the local variables of a failing test: -l / --showlocals
+    exit the testing suite as soon as a test fails: -x / --exitfirst
+    rerun only the tests that failed with the last run: --lf / --last-failed
+    rerun all the tests, but start with those that failed first: --ff / --failed-first
+
+-Property based testing
+
+    Pytest automatize our testing procedure, but we still have to think and write a great number of tests, and most of them are going to be similar with small variations
+    The best solution would be for the computer to generate and keep track of tests for us
+    This is not possible in a literal sense, but we can get pretty close to it
+
+    I can generalize the anecdotal tests I wrote earlier, trying to check not for individual results, but general properties and simmetries of my code
+
+-In unit testing:
+    for each test:
+        for each individual case
+            I have to specify the input
+            I have to specify the expected output (or error)
+
+-in property based testing:
+  I need to specify the kind of output I will provide to the function
+    for each test
+        specificy the invariants of that test property
+
+-HYPOTHESIS is a library that specify the input data in a random way according to the rules I specified.
+
+    Will throw them at the function actively trying to break it
+    If it finds an example that breaks the expected properties of the functions, tries to find the simplest example that still breaks it keeps track of that example and will provide it to all the future iterations of the test
+
+Hypothesis leverage libraries such as pytest for the basic testing, but generates test automatically using strategies.
+A strategy defines how the data are randomly generated and passed to the function to be tested
+
+%%file test_prova.py
+from hypothesis import given
+import hypothesis.strategies as st
+
+def inc(x):
+    if x==5:
+        return 0
+    return x + 1
+
+def dec(x):
+    return x - 1
+
+@given(value=st.integers())
+def test_answer_1(value):
+    print(value)
+    assert dec(inc(value)) == value
+    
+@given(value=st.integers())
+def test_answer_2(value):
+    assert dec(inc(value)) == inc(dec(value))
+
+pytest test_prova.py
+=================================== FAILURES ===================================
+________________________________ test_answer_2 _________________________________
+
+    @given(value=st.integers())
+>   def test_answer_2(value):
+value = 5
+
+    @given(value=st.integers())
+    def test_answer_2(value):
+>       assert dec(inc(value)) == inc(dec(value))
+E       assert -1 == 5
+E        +  where -1 = dec(0)
+E        +    where 0 = inc(5)
+E        +  and   5 = inc(4)
+E        +    where 4 = dec(5)
+
+---------------------------------- Hypothesis ----------------------------------
+Falsifying example: test_answer_2(value=5)
+====================== 1 failed, 1 passed in 0.15 seconds ======================
 
