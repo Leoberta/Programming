@@ -20,7 +20,7 @@ def simulation(nsteps):
 def test_generation_valid_state():
     state = generate_state()
     assert set(state) == {'.', '0'}
-    
+
 
 def test_generation_single_alive():
     state = generate_state()
